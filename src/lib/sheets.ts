@@ -1,5 +1,8 @@
 // Google Apps Script web-app bridge (see google-apps-script/code.gs).
-const SCRIPT_URL = import.meta.env.VITE_GOOGLE_APPS_SCRIPT_URL as string | undefined;
+// The env var can override this, but the deployed URL is hard-coded so no hosting setup is needed.
+const DEFAULT_SCRIPT_URL =
+  'https://script.google.com/macros/s/AKfycbzA00QrtPWjKkgh3WUgnvmfPfRrpo8D6kcjWSxk33YLoUqB117kmLZP-qQxZ0bYxJ29AQ/exec';
+const SCRIPT_URL = (import.meta.env.VITE_GOOGLE_APPS_SCRIPT_URL as string | undefined) || DEFAULT_SCRIPT_URL;
 
 export const isSheetsConfigured = Boolean(SCRIPT_URL);
 
