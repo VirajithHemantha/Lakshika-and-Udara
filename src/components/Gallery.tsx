@@ -3,12 +3,12 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, ZoomIn } from 'lucide-react';
 
 const images = [
-  { id: 1, url: '/images/a.jpg', fallback: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=800&auto=format&fit=crop', title: 'The Beginning' },
-  { id: 2, url: '/images/b.jpg', fallback: 'https://images.unsplash.com/photo-1522673607200-164d1f624698?q=80&w=800&auto=format&fit=crop', title: 'Our Journey' },
-  { id: 3, url: '/images/c.jpg', fallback: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=800&auto=format&fit=crop', title: 'A Thousand Words' },
-  { id: 4, url: '/images/d.jpg', fallback: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=800&auto=format&fit=crop', title: 'Endless Love' },
-  { id: 5, url: '/images/e.jpg', fallback: 'https://images.unsplash.com/photo-1532712938310-34cb3982ef74?q=80&w=800&auto=format&fit=crop', title: 'Cherished Moments' },
-  { id: 6, url: '/images/f.jpg', fallback: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800&auto=format&fit=crop', title: 'Together Forever' },
+  { id: 1, url: '/images/opt/a.webp', fallback: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=800&auto=format&fit=crop', title: 'The Beginning' },
+  { id: 2, url: '/images/opt/b.webp', fallback: 'https://images.unsplash.com/photo-1522673607200-164d1f624698?q=80&w=800&auto=format&fit=crop', title: 'Our Journey' },
+  { id: 3, url: '/images/opt/c.webp', fallback: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=800&auto=format&fit=crop', title: 'A Thousand Words' },
+  { id: 4, url: '/images/opt/d.webp', fallback: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=800&auto=format&fit=crop', title: 'Endless Love' },
+  { id: 5, url: '/images/opt/e.webp', fallback: 'https://images.unsplash.com/photo-1532712938310-34cb3982ef74?q=80&w=800&auto=format&fit=crop', title: 'Cherished Moments' },
+  { id: 6, url: '/images/opt/f.webp', fallback: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800&auto=format&fit=crop', title: 'Together Forever' },
 ];
 
 export const Gallery: React.FC = () => {
@@ -73,7 +73,9 @@ export const Gallery: React.FC = () => {
               onClick={() => setSelectedImage(image.url)}
             >
               <img
-                src={image.url}
+                src={image.url.replace('.webp', '-sm.webp')}
+                loading="lazy"
+                decoding="async"
                 onError={(e) => { e.currentTarget.src = image.fallback; }}
                 alt={image.title}
                 className="w-full h-full object-cover transition-transform duration-[2s] ease-out group-hover:scale-110"

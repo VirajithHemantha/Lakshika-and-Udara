@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Send, Loader2, Sparkles } from 'lucide-react';
+import { toast } from 'sonner';
+import { fetchWishes, submitWish } from '../lib/sheets';
 
 interface Wish {
   id: string;
@@ -19,10 +21,26 @@ const getRelativeTime = (date: Date) => {
   return `${Math.floor(hours / 24)}d ago`;
 };
 
-export const WishesSection: React.FC = () => {
+export const WishesSection: React.FC<{ guestName?: string }> = ({ guestName = '' }) => {
   const [wishes, setWishes] = useState<Wish[]>([]);
-  const [formData, setFormData] = useState({ name: '', message: '' });
+  const [formData, setFormData] = useState({ name: guestName, message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchWishes()
+      .then((rows) => {
+        if (cancelled) return;
+        setWishes(rows.map((row, i) => ({
+          id: `${row.createdAt}-${i}`,
+          name: row.name,
+          message: row.message,
+          createdAt: new Date(row.createdAt),
+        })));
+      })
+      .catch((error) => console.error('Could not load wishes: ', error));
+    return () => { cancelled = true; };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,8 +48,7 @@ export const WishesSection: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // Simulate network request latency
-      await new Promise(resolve => setTimeout(resolve, 800));
+      await submitWish({ name: formData.name.trim(), message: formData.message.trim(), invitedAs: guestName });
 
       const newWish: Wish = {
         id: Date.now().toString(),
@@ -42,9 +59,11 @@ export const WishesSection: React.FC = () => {
       
       // Prepend the new wish to the list
       setWishes(prev => [newWish, ...prev]);
-      setFormData({ name: '', message: '' });
+      setFormData({ name: guestName, message: '' });
+      toast.success('Thank you for your beautiful wishes!');
     } catch (error) {
       console.error('Error submitting wish: ', error);
+      toast.error('Could not send your wishes. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -92,7 +111,7 @@ export const WishesSection: React.FC = () => {
                 <input
                   required
                   type="text"
-                  placeholder="E.g., Uncle John"
+                  placeholder="E.g., Uncle Sunil"
                   className="w-full bg-white/80 px-6 py-4 rounded-full border border-stone-200/60 focus:ring-2 focus:ring-brand-gold/30 focus:border-brand-mocha/40 outline-none transition-all duration-300 font-serif italic text-lg shadow-inner placeholder:text-stone-300 text-brand-mocha"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -145,7 +164,7 @@ export const WishesSection: React.FC = () => {
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-4 mb-4">
                   <h4 className="font-display text-2xl text-brand-mocha tracking-tight pl-2">{wish.name}</h4>
                   <span className="text-[9px] uppercase tracking-[0.2em] text-brand-sand font-bold bg-white/60 px-3 py-1 rounded-full border border-stone-100/50">
-                    {wish.createdAt ? getRelativeTime(wish.createdAt) : 'just now'}
+                    {wish.createdAt && !isNaN(wish.createdAt.getTime()) ? getRelativeTime(wish.createdAt) : 'just now'}
                   </span>
                 </div>
                 <p className="text-brand-sand font-serif italic text-lg sm:text-lg leading-relaxed pl-2">

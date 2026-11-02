@@ -1,7 +1,8 @@
 import React, { useState, useRef } from "react";
+import { COUPLE_NAMES } from "../config/wedding";
 import { motion, AnimatePresence } from 'motion/react';
 
-export function EnvelopeOpening({ onComplete, onMusicStart }: { onComplete: () => void, onMusicStart?: () => void }) {
+export function EnvelopeOpening({ onComplete, onMusicStart, guestName }: { onComplete: () => void, onMusicStart?: () => void, guestName?: string }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showButton, setShowButton] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -27,6 +28,8 @@ export function EnvelopeOpening({ onComplete, onMusicStart }: { onComplete: () =
         className="absolute w-full h-full object-cover transition-opacity duration-1000"
         style={{ opacity: isPlaying ? 1 : 0.3 }}
         playsInline
+        preload="auto"
+        muted
         onEnded={handleVideoEnd}
       />
       
@@ -39,6 +42,14 @@ export function EnvelopeOpening({ onComplete, onMusicStart }: { onComplete: () =
             className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-sm z-10"
           >
             <div className="w-[1px] h-24 bg-gradient-to-b from-transparent to-brand-gold/50 mb-8" />
+            {guestName && (
+              <p className="px-6 mb-3 text-center font-serif italic text-2xl sm:text-3xl text-brand-gold-light drop-shadow">
+                Dear {guestName}
+              </p>
+            )}
+            <p className="px-6 mb-8 text-center font-display text-sm sm:text-base tracking-[0.3em] uppercase text-white/80">
+              {COUPLE_NAMES}
+            </p>
             <button
               onClick={handleStart}
               className="px-10 py-4 bg-transparent border border-brand-gold/40 text-brand-gold font-sans uppercase tracking-[0.4em] text-xs hover:bg-brand-gold hover:text-white transition-all duration-700 rounded-full shadow-[0_0_30px_rgba(197,160,89,0.1)]"
