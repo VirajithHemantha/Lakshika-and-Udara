@@ -20,8 +20,8 @@ export const Hero: React.FC<{ guestName?: string }> = ({ guestName }) => {
         style={{ y: y1, scale }}
       >
         <img
-          src="/images/opt/x.webp"
-          srcSet="/images/opt/x-sm.webp 800w, /images/opt/x.webp 853w"
+          src="/images/opt/hero.webp"
+          srcSet="/images/opt/hero-sm.webp 640w, /images/opt/hero.webp 853w"
           sizes="100vw"
           fetchPriority="high"
           decoding="async"
